@@ -5,6 +5,8 @@ import {
 } from '@mui/material';
 import AddUserForm from './AddUserForm'; // Import AddUserForm component
 
+const apiUrl = process.env.REACT_APP_BE_URL;
+console.log(`API URL: ${apiUrl}`);
 const UserList = () => {
   const [users, setUsers] = useState([]);
   const [filters, setFilters] = useState({
@@ -18,19 +20,20 @@ const UserList = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState(null);
-  const [showAddUserForm, setShowAddUserForm] = useState(false); // State to manage visibility of Add User form
+  const [showAddUserForm, setShowAddUserForm] = useState(false);
 
   useEffect(() => {
     fetchUsers();
   }, [filters]);
 
   const fetchUsers = () => {
-    axios.get('http://localhost:5192/api/User', { params: filters })
+    axios.get(`${apiUrl}/api/User`, { params: filters })
       .then(response => {
         setUsers(response.data);
       })
       .catch(error => {
         console.error('Error fetching users:', error);
+        console.log(process.env.REACT_APP_BE_URL);
       });
   };
 
@@ -52,7 +55,7 @@ const UserList = () => {
   };
 
   const handleDeleteConfirm = () => {
-    axios.delete(`http://localhost:5192/api/User/${deleteUserId}`)
+    axios.delete(`${apiUrl}/api/User/${deleteUserId}`)
       .then(() => {
         fetchUsers();
         handleCloseDelete();
@@ -74,7 +77,7 @@ const UserList = () => {
 
   const handleEditSubmit = () => {
     console.log('Submitting edit for user:', editUser);
-    axios.put(`http://localhost:5192/api/User/${editUser.id}`, editUser)
+    axios.put(`${apiUrl}/api/User/${editUser.id}`, editUser)
       .then(response => {
         console.log('User updated successfully:', response.data);
         fetchUsers();
@@ -150,7 +153,7 @@ const UserList = () => {
           variant="contained"
           color="primary"
           style={{ marginLeft: '10px' }}
-          onClick={() => setShowAddUserForm(true)} // Show Add User form when clicked
+          onClick={() => setShowAddUserForm(true)} 
         >
           Add User
         </Button>

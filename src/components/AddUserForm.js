@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, TextField, Typography } from '@mui/material';
 
+const apiUrl = process.env.REACT_APP_BE_URL;
 const AddUserForm = () => {
   const [formData, setFormData] = useState({
     username: '',
@@ -19,7 +20,6 @@ const AddUserForm = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
-    // Clear errors when user starts typing
     setErrors({
       ...errors,
       [e.target.name]: ''
@@ -55,10 +55,9 @@ const AddUserForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      axios.post('http://localhost:5192/api/User', formData)
+      axios.post(`${apiUrl}/api/User/`, formData)
         .then(response => {
           console.log('User added:', response.data);
-          // Reset form fields or show success message
           setFormData({
             username: '',
             email: '',
@@ -71,10 +70,8 @@ const AddUserForm = () => {
           console.error('Error adding user:', error);
           if (error.response && error.response.data) {
             const errorMessage = error.response.data;
-            // Update state to display the error message
             setServerError(errorMessage);
           } else {
-            // Handle generic error
             setServerError('An error occurred while adding the user.');
           }
         });
